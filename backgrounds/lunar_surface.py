@@ -8,6 +8,8 @@ from heightmap import heightmap_1d
 
 class LunarSurface(object):
     def __init__(self, depth=3):
+        self.starfield = Starfield()
+
         self.textures = []
         mul = 0.125 / 2.0
         for _ in range(depth):
@@ -27,9 +29,11 @@ class LunarSurface(object):
             mul *= 2
 
     def update(self, delta):
-        pass
+        self.starfield.update(delta)
 
     def render(self, screen, camera):
+        self.starfield.render(screen, camera)
+
         mul = 0.125
         for texture in self.textures:
             x = int(-camera.x * mul) % 512
