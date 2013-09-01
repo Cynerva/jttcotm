@@ -15,14 +15,14 @@ class LunarSurface(object):
         self.world = b2World(gravity=(0, -100), doSleep=True)
         self.ground = self.world.CreateStaticBody(
             position=(0, 0),
-            shapes=b2PolygonShape(box=(190, 20))
+            shapes=b2PolygonShape(box=(190, 20, (0, 0), 0.5))
         )
         self.player = Player(self.world, (0, 200))
 
     def update(self, delta):
         pygame.event.pump() # TODO: remove this
         self.background.update(delta)
-        self.world.Step(delta, 6, 2)
+        self.world.Step(delta, 1, 1)
         self.world.ClearForces()
         self.player.update(delta)
         self.camera.x, self.camera.y = self.player.pos
