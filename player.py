@@ -7,18 +7,17 @@ from debug import draw_body
 
 class Player(object):
     def __init__(self, world, pos=(0, 0)):
-        self.body = world.CreateDynamicBody(position=pos)
+        self.body = world.CreateDynamicBody(position=pos, allowSleep=False)
         self.body.CreatePolygonFixture(
             box=(8, 16),
-            density=2,
+            density=1,
             friction=0.0,
         )
-        self.body.allowSleep = False
         self.body.linearDamping = 0.0
         self.body.angularDamping = 0.0
         self.sensor = self.body.CreatePolygonFixture(
             box=(6, 2, (0, -16), 0),
-            density=2,
+            density=1,
             friction=0.0,
             isSensor = True
         )
@@ -37,7 +36,7 @@ class Player(object):
                     fixtureA = ce.contact.fixtureA
                     fixtureB = ce.contact.fixtureB
                     if self.sensor == fixtureA or self.sensor == fixtureB:
-                        self.body.linearVelocity[1] = 150.0
+                        self.body.linearVelocity[1] = 200.0
                         break
         elif self.body.linearVelocity[1] > 0.0:
             vel_delta = self.body.linearVelocity[1] * delta * 2.0

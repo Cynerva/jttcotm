@@ -18,10 +18,9 @@ class LunarSurface(object):
         heightmap = heightmap_1d(8)
         ground_shapes = []
         heightmap[0] *= 128.0
-        heightmap[0] += 256.0
         for x in range(1, 256):
             heightmap[x] *= 128.0
-            heightmap[x] += (((x - 128.0) / 128.0) ** 2 - 1.0) * 1024.0 + 256.0
+            heightmap[x] += (((x - 128.0) / 128.0) ** 2 - 1.0) * 1024.0
             left = heightmap[x - 1]
             right = heightmap[x]
             ground_shapes.append(b2PolygonShape(
@@ -42,7 +41,7 @@ class LunarSurface(object):
     def update(self, delta):
         pygame.event.pump() # TODO: remove this
         self.background.update(delta)
-        self.world.Step(delta, 1, 1)
+        self.world.Step(delta, 8, 8)
         self.world.ClearForces()
         self.player.update(delta)
         self.camera.x, self.camera.y = self.player.pos
