@@ -3,9 +3,12 @@ from time import time
 
 
 class Game(object):
+    def __init__(self):
+        from backgrounds import Starfield
+        self.starfield = Starfield()
+
     def update(self, delta):
-        pass
+        self.starfield.update(delta)
 
     def render(self, screen):
-        pygame.draw.line(screen, (64, 0, 128), (0, 0), (400, 300))
-        pass
+        self.starfield.render(screen)
