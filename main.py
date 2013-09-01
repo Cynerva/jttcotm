@@ -1,14 +1,13 @@
 import pygame
 from time import time
+
 from game import Game
-
-
-SIZE = WIDTH, HEIGHT = 800, 600
+from config import size
 
 
 def main():
     pygame.init()
-    screen = pygame.display.set_mode(SIZE)
+    screen = pygame.display.set_mode(size)
     game = Game()
 
     last_time = time()
