@@ -7,4 +7,5 @@ class Game(object):
         pass
 
     def render(self, screen):
+        pygame.draw.line(screen, (64, 0, 128), (0, 0), (400, 300))
         pass
