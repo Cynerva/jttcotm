@@ -15,7 +15,9 @@ def main():
         next_time = time()
 
         game.update(delta=next_time - last_time)
+        screen.fill((0, 0, 0)) # TODO: consider removing this
         game.render(screen)
+        pygame.display.flip()
 
         last_time = next_time
 
