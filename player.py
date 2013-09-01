@@ -8,10 +8,17 @@ from debug import draw_body
 class Player(object):
     def __init__(self, world, pos=(0, 0)):
         self.body = world.CreateDynamicBody(position=pos)
-        self.body.CreatePolygonFixture(box=(8, 16), density=1, friction=0.0)
+        self.body.CreatePolygonFixture(
+            box=(8, 16),
+            density=2,
+            friction=0.0,
+        )
+        self.body.allowSleep = False
+        self.body.linearDamping = 0.0
+        self.body.angularDamping = 0.0
         self.sensor = self.body.CreatePolygonFixture(
             box=(6, 2, (0, -16), 0),
-            density=1,
+            density=2,
             friction=0.0,
             isSensor = True
         )
