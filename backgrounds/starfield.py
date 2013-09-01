@@ -31,6 +31,6 @@ class Starfield(object):
         for star in self.stars:
             star.update(delta)
 
-    def render(self, screen):
+    def render(self, screen, camera):
         for star in self.stars:
             star.render(screen)
