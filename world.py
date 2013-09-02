@@ -90,11 +90,22 @@ class Chunk(object):
         for fixture in body.fixtures:
             shape = fixture.shape
             vertices = [tuple(body.transform * x) for x in shape.vertices]
-            vertices = [(x - self.pos[0] - 256, y - self.pos[1] + 256) for (x, y) in vertices]
+            vertices = [
+                (x - self.pos[0] - 256, y - self.pos[1] + 256)
+                for (x, y) in vertices
+            ]
             polygon = Polygon(vertices)
             self.polygon -= polygon
         self.load_body()
-                
+
+    def blit(self, texture, pos):
+        if self.texture:
+            pos = (
+                pos[0] - self.pos[0] - texture.get_width() / 2,
+                self.pos[1] - pos[1] - texture.get_height() / 2
+            )
+            self.texture.blit(texture, pos)
+
 class World(object):
     def __init__(self):
         self.b2world = b2World(gravity=(0, -100), doSleep=True)
@@ -141,3 +152,7 @@ class World(object):
     def carve(self, body):
         for chunk in self.chunks.values():
             chunk.carve(body)
+
+    def blit(self, texture, pos):
+        for chunk in self.chunks.values():
+            chunk.blit(texture, pos)

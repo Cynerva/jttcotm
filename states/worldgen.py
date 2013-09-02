@@ -18,6 +18,13 @@ class WorldGenState(object):
             shapes = b2PolygonShape(box=(25, 25))
         )
 
+        self.texture = pygame.Surface(
+            (64, 64),
+        )
+        for y in range(64):
+            for x in range(64):
+                self.texture.set_at((x, y), (255, 0, 0))
+
     def update(self, delta):
         pygame.event.pump() # TODO: remove this
 
@@ -35,6 +42,7 @@ class WorldGenState(object):
         self.body.position = self.camera.pos
         self.body.angle = random.uniform(0.0, 3.1415926*2.0)
         self.world.carve(self.body)
+        self.world.blit(self.texture, self.camera.pos)
 
         self.background.update(delta)
         self.world.update(delta)
