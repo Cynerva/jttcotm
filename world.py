@@ -1,26 +1,39 @@
+import os
+import random
 import pygame
 from pygame.locals import *
 from Box2D import *
 
 
+try:
+    os.makedirs("data/world")
+except OSError:
+    pass
+
+
 class Chunk(object):
+    underground_texture = None
+
     def __init__(self, world, chunk_pos):
         self.world = world
+        self.chunk_pos = chunk_pos
         self.pos = (chunk_pos[0] * 512, chunk_pos[1] * 512)
 
-        self.texture = pygame.Surface(
-            (512, 512),
-            flags=SRCALPHA
-        )
-        pygame.draw.line(self.texture, (255, 0, 0), (0, 0), (512, 512))
-        pygame.draw.line(self.texture, (0, 255, 0), (0, 0), (0, 512))
-        pygame.draw.line(self.texture, (0, 255, 0), (0, 0), (512, 0))
-        pygame.draw.line(self.texture, (0, 255, 0), (512, 512), (0, 512))
-        pygame.draw.line(self.texture, (0, 255, 0), (512, 512), (512, 0))
+        texture_filename = "data/world/%i_%i.tga" % self.chunk_pos
+        if os.path.exists(texture_filename):
+            self.texture = pygame.image.load(texture_filename)
+        elif chunk_pos[1] <= 0:
+            self.texture = Chunk.underground_texture
+        else:
+            self.texture = None
 
     def render(self, screen, camera):
         pos = camera.screen_pos(*self.pos)
-        screen.blit(self.texture, pos)
+        if self.texture:
+            screen.blit(self.texture, pos)
+
+    def save(self):
+        pygame.image.save(self.texture, "data/world/%i_%i.tga" % self.chunk_pos)
 
     def unload(self):
         pass
@@ -31,6 +44,12 @@ class World(object):
         self.center = (0, 0)
         self.center_chunk = None
         self.chunks = {}
+
+        Chunk.underground_texture = pygame.Surface((512, 512))
+        for y in range(512):
+            for x in range(512):
+                a = random.uniform(128.0 * 0.9, 128.0)
+                Chunk.underground_texture.set_at((x, y), (a, a, a))
 
     def update(self, delta):
         center_chunk = (int(self.center[0] / 512), int(self.center[1] / 512))
