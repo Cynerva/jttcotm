@@ -27,7 +27,7 @@ class Player(object):
 
     @property
     def pos(self):
-        return self.body.position
+        return tuple(self.body.position)
 
     def update(self, delta):
         keys = pygame.key.get_pressed()
