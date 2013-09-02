@@ -21,8 +21,6 @@ class LunarSurface(object):
         heightmap = heightmap_1d(12)
         for x in range(4096):
             heightmap[x] *= 128.0
-        for x in range(1024, 4096):
-            heightmap[x] += (((x - 2048) / 1024.0) ** 2.0 - 1.0) * 1024.0
 
         ground_shapes = []
         for x in range(4096/16-1):
@@ -39,6 +37,16 @@ class LunarSurface(object):
             shapes=ground_shapes
         )
 
+        self.texture = pygame.Surface(
+            (4096, 512),
+            flags=pygame.SRCALPHA
+        )
+        for x in range(4096):
+            top = int(256.0 - heightmap[x])
+            for y in range(top, 512):
+                a = random.uniform(192.0*0.9, 192.0)
+                self.texture.set_at((x, y), (a, a, a))
+            self.texture.set_at((x, top), (0, 0, 0))
         self.player = Player(self.world, (0, 500))
 
     def update(self, delta):
@@ -52,4 +60,5 @@ class LunarSurface(object):
     def render(self, screen):
         self.background.render(screen, self.camera)
         self.player.render(screen, self.camera)
-        draw_body(self.ground, screen, self.camera)
+        pos = self.camera.screen_pos(0, 256.0)
+        screen.blit(self.texture, pos)
