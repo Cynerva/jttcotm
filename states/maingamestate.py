@@ -27,5 +27,5 @@ class MainGameState(object):
 
     def render(self, screen):
         self.background.render(screen, self.camera)
-        self.player.render(screen, self.camera)
         self.world.render(screen, self.camera)
+        self.player.render(screen, self.camera)

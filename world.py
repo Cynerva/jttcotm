@@ -69,8 +69,8 @@ class Chunk(object):
         pos = camera.screen_pos(self.pos)
         if self.texture:
             screen.blit(self.texture, pos)
-        if self.body:
-            draw_body(self.body, screen, camera)
+        #if self.body:
+            #draw_body(self.body, screen, camera)
         screen.set_at(camera.screen_pos(self.pos), (255, 0, 0))
 
     def unload(self):
@@ -99,6 +99,8 @@ class Chunk(object):
         self.load_body()
 
     def blit(self, texture, pos):
+        if self.texture == Chunk.underground_texture:
+            self.texture = Chunk.underground_texture.copy()
         if self.texture:
             pos = (
                 pos[0] - self.pos[0] - texture.get_width() / 2,
