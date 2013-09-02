@@ -12,18 +12,18 @@ from world import World
 class MainGameState(object):
     def __init__(self):
         self.background = backgrounds.LunarSurface()
-        self.camera = Camera()
         self.world = World()
         self.player = Player(self.world, (0, 1000))
+        self.camera = Camera((0, 1000), tracking=self.player)
 
     def update(self, delta):
         pygame.event.pump() # TODO: remove this
         self.world.center = self.player.pos
-        self.camera.pos = self.player.pos
 
         self.background.update(delta)
         self.world.update(delta)
         self.player.update(delta)
+        self.camera.update(delta)
 
     def render(self, screen):
         self.background.render(screen, self.camera)
