@@ -49,15 +49,10 @@ class Chunk(object):
         shapes = []
         for strip in self.polygon.triStrip():
             for i in range(len(strip) - 2):
-                shapes.append(b2PolygonShape(
-                    vertices=strip[i:i+3]
-                ))
-            shapes.append(b2PolygonShape(
-                vertices=strip[-2:] + strip[:1]
-            ))
-            shapes.append(b2PolygonShape(
-                vertices=strip[-1:] + strip[:2]
-            ))
+                try:
+                    shapes.append(b2PolygonShape(vertices=strip[i:i+3]))
+                except:
+                    pass
 
         self.body = self.world.b2world.CreateStaticBody(
             position=(self.pos[0] + 256, self.pos[1] - 256),
