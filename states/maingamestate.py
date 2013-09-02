@@ -20,7 +20,7 @@ class MainGameState(object):
     def update(self, delta):
         pygame.event.pump() # TODO: remove this
         self.world.center = self.player.pos
-        self.camera.x, self.camera.y = self.player.pos
+        self.camera.pos = self.player.pos
 
         self.background.update(delta)
         self.world.update(delta)

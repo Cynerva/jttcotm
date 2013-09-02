@@ -36,8 +36,8 @@ class LunarSurface(object):
 
         mul = 0.125
         for texture in self.textures:
-            x = int(-camera.x * mul) % 512
-            y = camera.y * mul
+            x = int(-camera.pos[0] * mul) % 512
+            y = camera.pos[1] * mul
             screen.blit(texture, (x, y))
             screen.blit(texture, (x - 512, y))
             mul *= 2
