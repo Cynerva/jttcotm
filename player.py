@@ -7,7 +7,10 @@ from debug import draw_body
 
 class Player(object):
     def __init__(self, world, pos=(0, 0)):
-        self.body = world.CreateDynamicBody(position=pos, allowSleep=False)
+        self.body = world.b2world.CreateDynamicBody(
+            position=pos,
+            allowSleep=False
+        )
         self.body.CreatePolygonFixture(
             box=(8, 16),
             density=1,
