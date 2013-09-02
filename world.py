@@ -1,6 +1,6 @@
 import os
 import random
-from copy import deepcopy
+import pickle
 
 import pygame
 from pygame.locals import *
@@ -31,6 +31,12 @@ class Chunk(object):
             self.texture = pygame.image.load(texture_filename)
         elif chunk_pos[1] <= 0:
             self.texture = Chunk.underground_texture
+
+        data_filename = "data/world/%i_%i.dat" % self.chunk_pos
+        if os.path.exists(data_filename):
+            with open(data_filename) as fin:
+                self.polygon = pickle.load(fin)
+        elif chunk_pos[1] <= 0:
             self.polygon = Polygon((
                 (-256, -256), 
                 (-256, 256), 
@@ -67,11 +73,16 @@ class Chunk(object):
             draw_body(self.body, screen, camera)
         screen.set_at(camera.screen_pos(self.pos), (255, 0, 0))
 
-    def save(self):
-        pygame.image.save(self.texture, "data/world/%i_%i.tga" % self.chunk_pos)
-
     def unload(self):
-        pass
+        if self.body:
+            self.world.b2world.DestroyBody(self.body)
+        if self.texture:
+            pygame.image.save(
+                self.texture, "data/world/%i_%i.tga" % self.chunk_pos
+            )
+        if self.polygon:
+            with open("data/world/%i_%i.dat" % self.chunk_pos, "w") as fout:
+                pickle.dump(self.polygon, fout)
 
     def carve(self, body):
         if not self.polygon:
