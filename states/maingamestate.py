@@ -11,7 +11,6 @@ from world import World
 
 class MainGameState(object):
     def __init__(self):
-        """ Good god what is this even """
         self.background = backgrounds.LunarSurface()
         self.camera = Camera()
         self.world = World()

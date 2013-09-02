@@ -1,7 +1,7 @@
 import pygame
 from time import time
 
-from states import MainGameState
+from states import WorldGenState, MainGameState
 from config import screen_size, screen_width, screen_height
 
 
@@ -9,7 +9,8 @@ def main():
     pygame.init()
     screen = pygame.display.set_mode((screen_width * 2, screen_height * 2))
     surface = pygame.Surface(screen_size)
-    state = MainGameState()
+    #state = MainGameState()
+    state = WorldGenState()
 
     last_time = time()
     while True:

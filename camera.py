@@ -1,10 +1,11 @@
 from config import screen_width, screen_height
 
 class Camera(object):
-    def __init__(self):
-        self.pos = (0.0, 0.0)
+    def __init__(self, pos=(0.0, 0.0)):
+        self.pos = pos
 
-    def screen_pos(self, x, y):
-        x = x - self.pos[0] + screen_width / 2.0
-        y = self.pos[1] - y + screen_height / 2.0
-        return (x, y)
+    def screen_pos(self, pos):
+        return (
+            int(pos[0] - self.pos[0] + screen_width / 2),
+            int(self.pos[1] - pos[1] + screen_height / 2)
+        )

@@ -10,7 +10,7 @@ def draw_body(body, screen, camera):
     for fixture in body.fixtures:
         shape = fixture.shape
         vertices = [
-            camera.screen_pos(*(body.transform * x))
+            camera.screen_pos(body.transform * x)
             for x in shape.vertices
         ]
         color = (255, 255, 255)
