@@ -4,14 +4,14 @@ from Box2D import *
 
 
 class Chunk(object):
-    def __init__(self, chunk_pos):
+    def __init__(self, world, chunk_pos):
+        self.world = world
+        self.pos = (chunk_pos[0] * 512, chunk_pos[1] * 512)
+
         self.texture = pygame.Surface(
             (512, 512),
             flags=SRCALPHA
         )
-        self.pos = (chunk_pos[0] * 512, chunk_pos[1] * 512)
-
-        # placeholder texture
         pygame.draw.line(self.texture, (255, 0, 0), (0, 0), (512, 512))
         pygame.draw.line(self.texture, (0, 255, 0), (0, 0), (0, 512))
         pygame.draw.line(self.texture, (0, 255, 0), (0, 0), (512, 0))
@@ -22,6 +22,8 @@ class Chunk(object):
         pos = camera.screen_pos(*self.pos)
         screen.blit(self.texture, pos)
 
+    def unload(self):
+        pass
 
 class World(object):
     def __init__(self):
@@ -38,7 +40,20 @@ class World(object):
         )
         if center_chunk != self.center_chunk:
             self.center_chunk = center_chunk
-            self.chunks[center_chunk] = Chunk(center_chunk)
+
+            wanted = set()
+            for x in range(-1, 2):
+                for y in range(-1, 2):
+                    chunk_pos = (center_chunk[0] + x, center_chunk[1] + y)
+                    wanted.add((center_chunk[0] + x, center_chunk[1] + y))
+
+            for chunk_pos, chunk in self.chunks.items():
+                if not chunk_pos in wanted:
+                    chunk.unload()
+                    del self.chunks[chunk_pos]
+            for chunk_pos in wanted:
+                if not chunk_pos in self.chunks:
+                    self.chunks[chunk_pos] = Chunk(self, chunk_pos)
 
         self.b2world.Step(delta, 8, 8)
         self.b2world.ClearForces()
