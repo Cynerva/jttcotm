@@ -13,8 +13,8 @@ class MainGameState(object):
     def __init__(self):
         self.background = backgrounds.LunarSurface()
         self.world = World()
-        self.player = Player(self.world, (0, 1000))
-        self.camera = Camera((0, 1000), tracking=self.player)
+        self.player = Player(self.world, (0, 100.0))
+        self.camera = Camera((0, 100.0), tracking=self.player)
 
     def update(self, delta):
         pygame.event.pump() # TODO: remove this

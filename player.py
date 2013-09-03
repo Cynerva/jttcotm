@@ -13,14 +13,14 @@ class Player(object):
             allowSleep=False
         )
         self.body.CreatePolygonFixture(
-            box=(8, 16),
+            box=(0.8, 1.6),
             density=1,
             friction=0.0,
         )
         self.body.linearDamping = 0.0
         self.body.angularDamping = 0.0
         self.sensor = self.body.CreatePolygonFixture(
-            box=(6, 2, (0, -16), 0),
+            box=(0.6, 0.2, (0, -1.6), 0),
             density=1,
             friction=0.0,
             isSensor = True
@@ -56,16 +56,16 @@ class Player(object):
 
         # Vertical logic
         if keys[K_w] and can_jump:
-            self.body.linearVelocity[1] = 200.0
+            self.body.linearVelocity[1] = 30.0
         elif self.body.linearVelocity[1] > 0.0:
             vel_delta = self.body.linearVelocity[1] * delta * 2.0
             self.body.linearVelocity[1] -= vel_delta
 
         # Horizontal logic
         if keys[K_a]:
-            self.body.linearVelocity[0] -= 300.0 * delta
+            self.body.linearVelocity[0] -= 30.0 * delta
         if keys[K_d]:
-            self.body.linearVelocity[0] += 300.0 * delta
+            self.body.linearVelocity[0] += 30.0 * delta
         self.body.linearVelocity[0] -= self.body.linearVelocity[0] * delta * 2.0
             
         self.body.angle = 0.0
@@ -81,10 +81,9 @@ class Player(object):
             self.sprite = self.jump_sprite
         else:
             self.sprite = self.fall_sprite
-        sprite_delta = delta * abs(self.body.linearVelocity[0]) / 4.0
+        sprite_delta = delta * abs(self.body.linearVelocity[0]) * 2.0
         mirror = self.body.linearVelocity[0] < 0.0
         self.sprite.update(sprite_delta, mirror)
-
 
     def render(self, screen, camera):
         self.sprite.render(screen, camera, self.pos)

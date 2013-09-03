@@ -21,7 +21,7 @@ class Chunk(object):
     def __init__(self, world, chunk_pos):
         self.world = world
         self.chunk_pos = chunk_pos
-        self.pos = (chunk_pos[0] * 512, chunk_pos[1] * 512)
+        self.pos = (chunk_pos[0] * 51.2, chunk_pos[1] * 51.2)
         self.texture = None
         self.polygon = None
         self.body = None
@@ -38,10 +38,10 @@ class Chunk(object):
                 self.polygon = pickle.load(fin)
         elif chunk_pos[1] <= 0:
             self.polygon = Polygon((
-                (-256, -256), 
-                (-256, 256), 
-                (256, 256), 
-                (256, -256) 
+                (-25.6, -25.6), 
+                (-25.6, 25.6), 
+                (25.6, 25.6), 
+                (25.6, -25.6) 
             ))
 
         self.load_body()
@@ -61,7 +61,7 @@ class Chunk(object):
                     pass
 
         self.body = self.world.b2world.CreateStaticBody(
-            position=(self.pos[0] + 256, self.pos[1] - 256),
+            position=(self.pos[0] + 25.6, self.pos[1] - 25.6),
             shapes=shapes
         )
 
@@ -70,8 +70,7 @@ class Chunk(object):
         if self.texture:
             screen.blit(self.texture, pos)
         #if self.body:
-            #draw_body(self.body, screen, camera)
-        screen.set_at(camera.screen_pos(self.pos), (255, 0, 0))
+        #    draw_body(self.body, screen, camera)
 
     def unload(self):
         if self.body:
@@ -91,7 +90,7 @@ class Chunk(object):
             shape = fixture.shape
             vertices = [tuple(body.transform * x) for x in shape.vertices]
             vertices = [
-                (x - self.pos[0] - 256, y - self.pos[1] + 256)
+                (x - self.pos[0] - 25.6, y - self.pos[1] + 25.6)
                 for (x, y) in vertices
             ]
             polygon = Polygon(vertices)
@@ -110,7 +109,7 @@ class Chunk(object):
 
 class World(object):
     def __init__(self):
-        self.b2world = b2World(gravity=(0, -100), doSleep=True)
+        self.b2world = b2World(gravity=(0, -10.0), doSleep=True)
         self.center = (0, 0)
         self.center_chunk = None
         self.chunks = {}
@@ -122,7 +121,7 @@ class World(object):
                 Chunk.underground_texture.set_at((x, y), (a, a, a))
 
     def update(self, delta):
-        center_chunk = (int(self.center[0] / 512), int(self.center[1] / 512))
+        center_chunk = (int(self.center[0] / 51.2), int(self.center[1] / 51.2))
         center_chunk = (
             center_chunk[0] - 1 if self.center[0] < 0.0 else center_chunk[0],
             center_chunk[1] if self.center[1] < 0.0 else center_chunk[1] + 1

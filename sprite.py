@@ -11,14 +11,15 @@ class Sprite(object):
         self.mirror = mirror
 
     def render(self, screen, camera, pos):
-        pos = (
-            pos[0] - self.image.get_width() / 2,
-            pos[1] + self.image.get_height() / 2
-        )
         image = self.image
         if self.mirror:
             image = pygame.transform.flip(self.image, True, False)
-        screen.blit(image, camera.screen_pos(pos))
+        pos = camera.screen_pos(pos)
+        pos = (
+            pos[0] - self.image.get_width() / 2,
+            pos[1] - self.image.get_height() / 2
+        )
+        screen.blit(image, pos)
 
 
 class Animation(object):
