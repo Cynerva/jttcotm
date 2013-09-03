@@ -15,7 +15,7 @@ class WorldGenState(object):
         self.world = World()
         self.camera = Camera((0.0, 0.0))
         self.body = self.world.b2world.CreateStaticBody(
-            shapes = b2PolygonShape(box=(25, 25))
+            shapes = b2PolygonShape(box=(2.5, 2.5))
         )
 
         self.texture = pygame.Surface(
@@ -32,13 +32,13 @@ class WorldGenState(object):
 
         keys = pygame.key.get_pressed()
         if keys[K_w]:
-            self.camera.pos = (self.camera.pos[0], self.camera.pos[1] + 10)
+            self.camera.pos = (self.camera.pos[0], self.camera.pos[1] + 1)
         if keys[K_a]:
-            self.camera.pos = (self.camera.pos[0] - 10, self.camera.pos[1])
+            self.camera.pos = (self.camera.pos[0] - 1, self.camera.pos[1])
         if keys[K_s]:
-            self.camera.pos = (self.camera.pos[0], self.camera.pos[1] - 10)
+            self.camera.pos = (self.camera.pos[0], self.camera.pos[1] - 1)
         if keys[K_d]:
-            self.camera.pos = (self.camera.pos[0] + 10, self.camera.pos[1])
+            self.camera.pos = (self.camera.pos[0] + 1, self.camera.pos[1])
 
         self.world.center = self.camera.pos
         self.body.position = self.camera.pos
