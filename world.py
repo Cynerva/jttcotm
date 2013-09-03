@@ -29,14 +29,14 @@ class Chunk(object):
         texture_filename = "data/world/%i_%i.tga" % self.chunk_pos
         if os.path.exists(texture_filename):
             self.texture = pygame.image.load(texture_filename)
-        elif chunk_pos[1] <= 0:
+        elif chunk_pos[1] <= 1:
             self.texture = Chunk.underground_texture
 
         data_filename = "data/world/%i_%i.dat" % self.chunk_pos
         if os.path.exists(data_filename):
             with open(data_filename) as fin:
                 self.polygon = pickle.load(fin)
-        elif chunk_pos[1] <= 0:
+        elif chunk_pos[1] <= 1:
             self.polygon = Polygon((
                 (-25.6, -25.6), 
                 (-25.6, 25.6), 
@@ -69,8 +69,8 @@ class Chunk(object):
         pos = camera.screen_pos(self.pos)
         if self.texture:
             screen.blit(self.texture, pos)
-        if self.body:
-            draw_body(self.body, screen, camera)
+        #if self.body:
+        #    draw_body(self.body, screen, camera)
 
     def unload(self):
         if self.body:
@@ -79,9 +79,8 @@ class Chunk(object):
             pygame.image.save(
                 self.texture, "data/world/%i_%i.tga" % self.chunk_pos
             )
-        if self.polygon:
-            with open("data/world/%i_%i.dat" % self.chunk_pos, "w") as fout:
-                pickle.dump(self.polygon, fout)
+        with open("data/world/%i_%i.dat" % self.chunk_pos, "w") as fout:
+            pickle.dump(self.polygon, fout)
 
     def carve(self, body):
         if not self.polygon:
@@ -97,7 +96,7 @@ class Chunk(object):
             self.polygon -= polygon
         self.load_body()
 
-    def blit(self, texture, pos):
+    def blit(self, texture, pos, special_flags=0):
         if self.texture == Chunk.underground_texture:
             self.texture = Chunk.underground_texture.copy()
         if self.texture:
@@ -105,7 +104,7 @@ class Chunk(object):
                 (pos[0] - self.pos[0]) * 10.0 - texture.get_width() / 2,
                 (self.pos[1] - pos[1]) * 10.0 - texture.get_height() / 2
             )
-            self.texture.blit(texture, pos)
+            self.texture.blit(texture, pos, special_flags=special_flags)
 
 class World(object):
     def __init__(self):
@@ -114,7 +113,7 @@ class World(object):
         self.center_chunk = None
         self.chunks = {}
 
-        Chunk.underground_texture = pygame.Surface((512, 512))
+        Chunk.underground_texture = pygame.Surface((512, 512), SRCALPHA)
         for y in range(512):
             for x in range(512):
                 a = random.uniform(96.0, 128.0)
@@ -154,6 +153,6 @@ class World(object):
         for chunk in self.chunks.values():
             chunk.carve(body)
 
-    def blit(self, texture, pos):
+    def blit(self, texture, pos, special_flags=0):
         for chunk in self.chunks.values():
-            chunk.blit(texture, pos)
+            chunk.blit(texture, pos, special_flags)
