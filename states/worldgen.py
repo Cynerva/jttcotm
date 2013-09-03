@@ -24,7 +24,7 @@ class WorldGenState(object):
         )
         for y in range(50):
             for x in range(50):
-                a = random.uniform(32.0, 64.0)
+                a = random.uniform(16.0, 32.0)
                 self.texture.set_at((x, y), (a, a, a))
 
     def update(self, delta):

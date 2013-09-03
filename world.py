@@ -117,7 +117,7 @@ class World(object):
         Chunk.underground_texture = pygame.Surface((512, 512))
         for y in range(512):
             for x in range(512):
-                a = random.uniform(128.0 * 0.9, 128.0)
+                a = random.uniform(96.0, 128.0)
                 Chunk.underground_texture.set_at((x, y), (a, a, a))
 
     def update(self, delta):
