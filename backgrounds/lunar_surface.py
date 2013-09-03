@@ -24,7 +24,6 @@ class LunarSurface(object):
                     noise = random.uniform(0.9, 1.0)
                     color = tuple(255.0 * noise * mul for _ in range(3))
                     texture.set_at((x, y), color)
-                texture.set_at((x, min_y), (0, 0, 0))
             self.textures.append(texture)
             mul *= 2
 
