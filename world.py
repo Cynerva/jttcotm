@@ -20,8 +20,8 @@ class Chunk(object):
 
     def __init__(self, world, chunk_pos):
         self.world = world
-        self.chunk_pos = chunk_pos
         self.pos = (chunk_pos[0] * 51.2, chunk_pos[1] * 51.2)
+        self.chunk_pos = (chunk_pos[0] % 32, chunk_pos[1])
         self.texture = None
         self.polygon = None
         self.body = None

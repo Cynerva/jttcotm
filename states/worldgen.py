@@ -38,7 +38,7 @@ class SurfaceGenState(object):
 
     def update(self, delta):
         left = self.heightmap[self.x] * 51.2
-        right = self.heightmap[self.x + 20] * 51.2
+        right = self.heightmap[(self.x + 20) % 16384] * 51.2
         self.world.center = (self.x / 10.0, left)
         self.world.update(delta)
         self.body = self.world.b2world.CreateStaticBody(
@@ -52,7 +52,7 @@ class SurfaceGenState(object):
         self.world.carve(self.body)
 
         for x in range(self.x, self.x + 20):
-            height = self.heightmap[x] * 51.2 + 51.2
+            height = self.heightmap[x % 16384] * 51.2 + 51.2
             self.world.blit(self.texture, (x / 10.0, height), BLEND_RGBA_MIN)
 
         self.world.update(delta)
@@ -60,7 +60,7 @@ class SurfaceGenState(object):
         self.camera.pos = self.world.center
 
         self.x += 5
-        if self.x > len(self.heightmap) - 20:
+        if self.x > len(self.heightmap) - 5:
             self.x = 0
 
     def render(self, screen):
