@@ -16,8 +16,8 @@ from debug import draw_body
 
 class WorldGenState(object):
     def __init__(self):
-        #self.state = SurfaceGenState()
-        self.state = CaveGenState()
+        self.state = SurfaceGenState()
+        #self.state = CaveGenState()
 
     def update(self, delta):
         pygame.event.pump() # TODO: remove this
