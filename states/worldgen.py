@@ -1,6 +1,6 @@
 import random
 import shutil
-from math import sin, cos
+from math import sin, cos, pi
 
 import pygame
 from pygame.locals import *
@@ -78,14 +78,24 @@ class CaveGenState(object):
         self.world = World()
         self.camera = Camera(tracking=self)
         self.pos = (0.0, 0.0)
-        self.angle = -3.1415926535 / 2.0
+        self.angle = -pi / 2.0
         self.vel_angle = 0.0
         self.heightmap = heightmap_1d(9)
         self.x = 0
 
     def update(self, delta):
-        self.vel_angle += random.uniform(-0.001, 0.001)
+        if self.pos[1] > -50.0:
+            self.vel_angle = -self.angle - pi / 2.0
+        else:
+            self.vel_angle += random.uniform(-0.001, 0.001)
+        self.vel_angle = max(-0.01, min(0.01, self.vel_angle))
+
         self.angle += self.vel_angle
+        if self.angle > pi / 2.0:
+            self.angle -= 2.0 * pi
+        if self.angle < -pi * 3.0 / 2.0:
+            self.angle += 2.0 * pi
+
         self.pos = (
             self.pos[0] + cos(self.angle) / 4.0,
             self.pos[1] + sin(self.angle) / 4.0
@@ -104,7 +114,7 @@ class CaveGenState(object):
 
         texture = pygame.Surface((10.0, size*20), flags=SRCALPHA)
         texture.fill((255, 255, 255, 255))
-        texture = pygame.transform.rotate(texture, self.angle * 180.0 / 3.14159)
+        texture = pygame.transform.rotate(texture, self.angle * 180.0 / pi)
         for y in range(texture.get_height()):
             for x in range(texture.get_width()):
                 color = texture.get_at((x, y))
