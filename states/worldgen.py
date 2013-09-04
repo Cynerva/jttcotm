@@ -77,14 +77,14 @@ class CaveGenState(object):
     def __init__(self):
         self.world = World()
         self.camera = Camera(tracking=self)
-        self.pos = (0.0, 0.0)
+        self.pos = (0.0, 52)
         self.angle = -pi / 2.0
         self.vel_angle = 0.0
-        self.heightmap = heightmap_1d(9)
-        self.x = 0
+        self.heightmap = heightmap_1d(10)
+        self.x = 1000
 
     def update(self, delta):
-        if self.pos[1] > -50.0:
+        if self.pos[1] > -50.0 or self.angle > pi/4 or self.angle < -3*pi/4:
             self.vel_angle = -self.angle - pi / 2.0
         else:
             self.vel_angle += random.uniform(-0.001, 0.001)
@@ -103,7 +103,7 @@ class CaveGenState(object):
         self.world.center = self.pos
         self.world.update(0.0)
 
-        size = (self.heightmap[self.x] + 1.0) * 4.0 + 2.0
+        size = (self.heightmap[self.x % len(self.heightmap)] + 1.0) * 4.0 + 2.0
         body = self.world.b2world.CreateStaticBody(
             position=self.pos,
             shapes=b2PolygonShape(box=(0.5, size))
@@ -126,7 +126,10 @@ class CaveGenState(object):
 
         self.camera.update(delta)
 
-        self.x = (self.x + 1) % len(self.heightmap)
+        self.x -= 1
+        if self.x == 0:
+            self.world.unload()
+            raise StateDone
 
     def render(self, screen):
         self.world.render(screen, self.camera)
