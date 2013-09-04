@@ -93,20 +93,18 @@ class CaveGenState(object):
         self.world.center = self.pos
         self.world.update(0.0)
 
-        carve_angle = random.uniform(0.0, 3.141592653 * 2.0)
-
         size = (self.heightmap[self.x] + 1.0) * 4.0 + 2.0
         body = self.world.b2world.CreateStaticBody(
             position=self.pos,
-            shapes=b2PolygonShape(box=(size, size))
+            shapes=b2PolygonShape(box=(0.5, size))
         )
-        body.angle = carve_angle
+        body.angle = self.angle
         self.world.carve(body)
         self.world.b2world.DestroyBody(body)
 
-        texture = pygame.Surface((size*20, size*20), flags=SRCALPHA)
+        texture = pygame.Surface((10.0, size*20), flags=SRCALPHA)
         texture.fill((255, 255, 255, 255))
-        texture = pygame.transform.rotate(texture, carve_angle * 180.0 / 3.14159)
+        texture = pygame.transform.rotate(texture, self.angle * 180.0 / 3.14159)
         for y in range(texture.get_height()):
             for x in range(texture.get_width()):
                 color = texture.get_at((x, y))
