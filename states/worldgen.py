@@ -10,7 +10,7 @@ import backgrounds
 from world import World
 from heightmap import heightmap_1d
 from camera import Camera
-from states import StateChange
+from states import StateChange, StateDone
 from debug import draw_body
 
 
