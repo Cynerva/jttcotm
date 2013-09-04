@@ -69,8 +69,8 @@ class Chunk(object):
         pos = camera.screen_pos(self.pos)
         if self.texture:
             screen.blit(self.texture, pos)
-        #if self.body:
-        #    draw_body(self.body, screen, camera)
+        if self.body:
+            draw_body(self.body, screen, camera)
 
     def unload(self):
         if self.body:
@@ -156,3 +156,8 @@ class World(object):
     def blit(self, texture, pos, special_flags=0):
         for chunk in self.chunks.values():
             chunk.blit(texture, pos, special_flags)
+
+    def unload(self):
+        for chunk in self.chunks.values():
+            chunk.unload()
+        self.chunks = {}
