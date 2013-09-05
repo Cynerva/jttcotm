@@ -1,3 +1,4 @@
+import os
 import sys
 import random
 import shutil
@@ -7,22 +8,29 @@ import pygame
 from pygame.locals import *
 from Box2D import *
 
+import states
 import backgrounds
 from world import World
 from heightmap import heightmap_1d
 from camera import Camera
-from states import StateChange, StateDone
 from debug import draw_body
 
 
 class WorldGenState(object):
     def __init__(self):
-        self.state = SurfaceGenState()
+        self.world = World()
+        self.state = SurfaceGenState(self.world)
+        shutil.rmtree("data/world")
+        os.makedirs("data/world")
 
     def update(self, delta):
         for event in pygame.event.get():
             if event.type == QUIT:
                 sys.exit(0)
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    self.world.unload()
+                    raise states.StateChange(states.PauseMenuState(self))
 
         try:
             self.state.update(delta)
@@ -34,8 +42,8 @@ class WorldGenState(object):
 
 
 class SurfaceGenState(object):
-    def __init__(self):
-        self.world = World()
+    def __init__(self, world):
+        self.world = world
         self.heightmap = heightmap_1d(14)
         self.camera = Camera()
         self.x = 0
@@ -69,16 +77,17 @@ class SurfaceGenState(object):
         self.x += 5
         if self.x > len(self.heightmap) - 5:
             self.world.unload()
-            raise StateChange(CaveGenState())
+            raise states.StateChange(states.CaveGenState(self.world))
 
     def render(self, screen):
         self.world.render(screen, self.camera)
-        draw_body(self.body, screen, self.camera)
+        if self.body != None:
+            draw_body(self.body, screen, self.camera)
 
 
 class CaveGenState(object):
-    def __init__(self):
-        self.world = World()
+    def __init__(self, world):
+        self.world = world
         self.camera = Camera(tracking=self)
         self.pos = (0.0, 52)
         self.angle = -pi / 2.0

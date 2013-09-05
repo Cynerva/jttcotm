@@ -1,5 +1,6 @@
 from util import StateChange, StateDone
 
-from maingamestate import MainGameState
+from mainmenu import MainMenuState
+from pausemenu import PauseMenuState
+from maingame import MainGameState
 from worldgen import WorldGenState
-from mainmenustate import MainMenuState

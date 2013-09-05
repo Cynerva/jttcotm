@@ -2,21 +2,21 @@ import sys
 import pygame
 from pygame.locals import *
 
-from states import StateChange, MainGameState, WorldGenState
+import states
 from config import screen_width
 
 
 MENU_ENTRIES = [
-    "New game",
-    "Generate world",
-    "Exit"
+    "Continue",
+    "Exit to Main Menu"
 ]
 
 
-class MainMenuState(object):
-    def __init__(self):
+class PauseMenuState(object):
+    def __init__(self, parent):
         self.font = pygame.font.Font(None, 16)
         self.selected = 0
+        self.parent = parent
 
     def update(self, delta):
         for event in pygame.event.get():
@@ -27,11 +27,9 @@ class MainMenuState(object):
                     self.selected += 1
                 elif event.key == K_RETURN:
                     if self.selected == 0:
-                        raise StateChange(MainGameState())
+                        raise states.StateChange(self.parent)
                     elif self.selected == 1:
-                        raise StateChange(WorldGenState())
-                    elif self.selected == 2:
-                        sys.exit(0)
+                        raise states.StateChange(states.MainMenuState())
             elif event.type == QUIT:
                 sys.exit(0)
 
@@ -49,3 +47,4 @@ class MainMenuState(object):
             screen.blit(texture, (x, y))
                 
             y += 32
+

@@ -161,3 +161,4 @@ class World(object):
         for chunk in self.chunks.values():
             chunk.unload()
         self.chunks = {}
+        self.center_chunk = None
