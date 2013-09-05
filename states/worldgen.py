@@ -1,3 +1,4 @@
+import sys
 import random
 import shutil
 from math import sin, cos, pi
@@ -17,10 +18,12 @@ from debug import draw_body
 class WorldGenState(object):
     def __init__(self):
         self.state = SurfaceGenState()
-        #self.state = CaveGenState()
 
     def update(self, delta):
-        pygame.event.pump() # TODO: remove this
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                sys.exit(0)
+
         try:
             self.state.update(delta)
         except StateChange as change:
