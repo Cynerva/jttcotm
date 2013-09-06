@@ -2,7 +2,8 @@ import os
 import sys
 import random
 import shutil
-from math import sin, cos, pi
+import math
+from math import pi
 
 import pygame
 from pygame.locals import *
@@ -16,10 +17,12 @@ from camera import Camera
 from debug import draw_body
 
 
-class WorldGenState(object):
+class SurfaceGenState(object):
     def __init__(self):
         self.world = World()
-        self.state = SurfaceGenState(self.world)
+        self.heightmap = heightmap_1d(14)
+        self.camera = Camera()
+        self.x = 0
         shutil.rmtree("data/world")
         os.makedirs("data/world")
 
@@ -27,28 +30,10 @@ class WorldGenState(object):
         for event in pygame.event.get():
             if event.type == QUIT:
                 sys.exit(0)
-            if event.type == KEYDOWN:
+            elif event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
-                    self.world.unload()
                     raise states.StateChange(states.PauseMenuState(self))
 
-        try:
-            self.state.update(delta)
-        except states.StateChange as change:
-            self.state = change.state
-
-    def render(self, screen):
-        self.state.render(screen)
-
-
-class SurfaceGenState(object):
-    def __init__(self, world):
-        self.world = world
-        self.heightmap = heightmap_1d(14)
-        self.camera = Camera()
-        self.x = 0
-
-    def update(self, delta):
         left = self.heightmap[self.x] * 51.2
         right = self.heightmap[(self.x + 20) % 16384] * 51.2
         self.world.center = (self.x / 10.0, left)
@@ -86,6 +71,21 @@ class CaveGenState(object):
         self.x = 1000
 
     def update(self, delta):
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                sys.exit(0)
+            elif event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    raise states.StateChange(states.PauseMenuState(self))
+
+        cos = math.cos(self.angle)
+        sin = math.sin(self.angle)
+
+        vertices = [
+            (self.pos[0] + sin * 10, self.pos[1] + cos * 10),
+            (self.pos[0] - sin * 10, self.pos[1] - cos * 10)
+        ]
+
         if self.pos[1] > -50.0 or self.angle > pi/4 or self.angle < -3*pi/4:
             self.vel_angle = -self.angle - pi / 2.0
         else:
@@ -99,16 +99,20 @@ class CaveGenState(object):
             self.angle += 2.0 * pi
 
         self.pos = (
-            self.pos[0] + cos(self.angle) / 4.0,
-            self.pos[1] + sin(self.angle) / 4.0
+            self.pos[0] + cos,
+            self.pos[1] + sin
         )
         self.world.center = self.pos
         self.world.update(0.0)
 
-        size = (self.heightmap[self.x % len(self.heightmap)] + 1.0) * 4.0 + 2.0
+        vertices += [
+            (self.pos[0] - sin * 10, self.pos[1] - cos * 10),
+            (self.pos[0] + sin * 10, self.pos[1] + cos * 10)
+        ]
+
         body = self.world.b2world.CreateStaticBody(
             position=self.pos,
-            shapes=b2PolygonShape(box=(0.5, size))
+            shapes=b2PolygonShape(vertices=vertices)
         )
         body.angle = self.angle
         self.world.carve(body)

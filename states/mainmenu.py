@@ -31,7 +31,7 @@ class MainMenuState(object):
                     if self.selected == 0:
                         raise states.StateChange(states.MainGameState())
                     elif self.selected == 1:
-                        raise states.StateChange(states.WorldGenState())
+                        raise states.StateChange(states.SurfaceGenState())
                     elif self.selected == 2:
                         sys.exit(0)
             elif event.type == QUIT:
