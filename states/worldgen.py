@@ -33,6 +33,7 @@ class SurfaceGenState(object):
                 sys.exit(0)
             elif event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
+                    self.world.unload()
                     raise states.StateChange(states.PauseMenuState(self))
 
         left = self.heightmap[self.x] * 51.2
@@ -83,6 +84,7 @@ class CaveGenState(object):
                 sys.exit(0)
             elif event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
+                    self.world.unload()
                     raise states.StateChange(states.PauseMenuState(self))
 
         cos = math.cos(self.angle)
@@ -93,6 +95,7 @@ class CaveGenState(object):
 
         if self.pos[1] < -1000:
             self.carve_end(delta)
+            self.world.unload()
             raise states.StateChange(states.MainMenuState())
         elif self.stack and random.uniform(0.0, 1.0) < 0.004:
             self.carve_end(delta)
