@@ -14,7 +14,7 @@ from world import World
 
 class MainGameState(object):
     def __init__(self):
-        self.background = backgrounds.LunarSurface()
+        self.background = backgrounds.Cave()
         self.world = World()
         self.player = Player(self.world, (0, 100.0))
         self.camera = Camera((0, 100.0), tracking=self.player)

@@ -13,14 +13,13 @@ class LunarSurface(object):
         self.textures = []
         mul = 0.125 / 2.0
         for _ in range(depth):
-            texture = pygame.Surface(
-                (512, screen_height),
-                flags=pygame.SRCALPHA
-            )
+            texture = pygame.Surface((512, screen_height * 2))
+            texture.set_colorkey((255, 0, 255))
+            texture.fill((255, 0, 255))
             heightmap = heightmap_1d(9)
             for x in range(512):
                 min_y = int((heightmap[x] * mul + 1.0) / 2.0 * screen_height)
-                for y in range(min_y, screen_height):
+                for y in range(min_y, screen_height * 2):
                     noise = random.uniform(0.9, 1.0)
                     color = tuple(255.0 * noise * mul for _ in range(3))
                     texture.set_at((x, y), color)
