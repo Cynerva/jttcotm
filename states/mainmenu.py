@@ -3,6 +3,7 @@ import pygame
 from pygame.locals import *
 
 import states
+import music
 from config import screen_width
 
 
@@ -17,13 +18,14 @@ class MainMenuState(object):
     def __init__(self):
         self.font = pygame.font.Font(None, 16)
         self.selected = 0
+        music.play("data/music/menu.ogg")
 
     def update(self, delta):
         for event in pygame.event.get():
             if event.type == KEYDOWN:
-                if event.key == K_w:
+                if event.key in [K_w, K_UP]:
                     self.selected -= 1
-                elif event.key == K_s:
+                elif event.key in [K_s, K_DOWN]:
                     self.selected += 1
                 elif event.key == K_RETURN:
                     if self.selected == 0:

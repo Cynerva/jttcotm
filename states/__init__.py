@@ -1,4 +1,4 @@
-from util import StateChange, StateDone
+from util import StateChange
 
 from mainmenu import MainMenuState
 from pausemenu import PauseMenuState

@@ -29,6 +29,7 @@ class Chunk(object):
         texture_filename = "data/world/%i_%i.tga" % self.chunk_pos
         if os.path.exists(texture_filename):
             self.texture = pygame.image.load(texture_filename)
+            self.texture.set_colorkey((255, 0, 255))
         elif chunk_pos[1] <= 1:
             self.texture = Chunk.underground_texture
 
@@ -49,6 +50,7 @@ class Chunk(object):
     def load_body(self):
         if self.body:
             self.world.b2world.DestroyBody(self.body)
+            self.body = None
         if not self.polygon:
             return
 
@@ -99,6 +101,7 @@ class Chunk(object):
     def blit(self, texture, pos, special_flags=0):
         if self.texture == Chunk.underground_texture:
             self.texture = Chunk.underground_texture.copy()
+            self.texture.set_colorkey((255, 0, 255))
         if self.texture:
             pos = (
                 (pos[0] - self.pos[0]) * 10.0 - texture.get_width() / 2,
@@ -113,10 +116,11 @@ class World(object):
         self.center_chunk = None
         self.chunks = {}
 
-        Chunk.underground_texture = pygame.Surface((512, 512), SRCALPHA)
+        Chunk.underground_texture = pygame.Surface((512, 512))
+        Chunk.underground_texture.set_colorkey((255, 0, 255))
         for y in range(512):
             for x in range(512):
-                a = random.uniform(96.0, 128.0)
+                a = random.uniform(112.0, 128.0)
                 Chunk.underground_texture.set_at((x, y), (a, a, a))
 
     def update(self, delta):

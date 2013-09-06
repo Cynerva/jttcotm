@@ -21,9 +21,9 @@ class PauseMenuState(object):
     def update(self, delta):
         for event in pygame.event.get():
             if event.type == KEYDOWN:
-                if event.key == K_w:
+                if event.key in [K_w, K_UP]:
                     self.selected -= 1
-                elif event.key == K_s:
+                elif event.key in [K_s, K_DOWN]:
                     self.selected += 1
                 elif event.key == K_RETURN:
                     if self.selected == 0:

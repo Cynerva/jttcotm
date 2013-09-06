@@ -34,7 +34,7 @@ class WorldGenState(object):
 
         try:
             self.state.update(delta)
-        except StateChange as change:
+        except states.StateChange as change:
             self.state = change.state
 
     def render(self, screen):
@@ -47,16 +47,15 @@ class SurfaceGenState(object):
         self.heightmap = heightmap_1d(14)
         self.camera = Camera()
         self.x = 0
-        self.body = None
-        self.texture = pygame.Surface((2, 1024), SRCALPHA)
-        self.texture.fill((0, 0, 0, 0))
+        self.texture = pygame.Surface((2, 1024))
+        self.texture.fill((255, 0, 255))
 
     def update(self, delta):
         left = self.heightmap[self.x] * 51.2
         right = self.heightmap[(self.x + 20) % 16384] * 51.2
         self.world.center = (self.x / 10.0, left)
-        self.world.update(delta)
-        self.body = self.world.b2world.CreateStaticBody(
+        self.world.update(0.0)
+        body = self.world.b2world.CreateStaticBody(
             shapes=b2PolygonShape(vertices=(
                 (self.x / 10.0, left),
                 (self.x / 10.0 + 2.0, right),
@@ -64,25 +63,22 @@ class SurfaceGenState(object):
                 (self.x / 10.0, right + 200.0)
             )
         ))
-        self.world.carve(self.body)
+        self.world.carve(body)
+        self.world.b2world.DestroyBody(body)
 
         for x in range(self.x, self.x + 20):
             height = self.heightmap[x % 16384] * 51.2 + 51.2
-            self.world.blit(self.texture, (x / 10.0, height), BLEND_RGBA_MIN)
-
-        self.world.update(delta)
+            self.world.blit(self.texture, (x / 10.0, height))
 
         self.camera.pos = self.world.center
 
         self.x += 5
         if self.x > len(self.heightmap) - 5:
             self.world.unload()
-            raise states.StateChange(states.CaveGenState(self.world))
+            raise states.StateChange(CaveGenState(self.world))
 
     def render(self, screen):
         self.world.render(screen, self.camera)
-        if self.body != None:
-            draw_body(self.body, screen, self.camera)
 
 
 class CaveGenState(object):
@@ -124,24 +120,18 @@ class CaveGenState(object):
         self.world.carve(body)
         self.world.b2world.DestroyBody(body)
 
-        texture = pygame.Surface((10.0, size*20), flags=SRCALPHA)
-        texture.fill((255, 255, 255, 255))
+        texture = pygame.Surface((10.0, size*20))
+        texture.fill((255, 0, 255))
+        texture.set_colorkey((0, 0, 0))
         texture = pygame.transform.rotate(texture, self.angle * 180.0 / pi)
-        for y in range(texture.get_height()):
-            for x in range(texture.get_width()):
-                color = texture.get_at((x, y))
-                if color == (255, 255, 255, 255):
-                    texture.set_at((x, y), (0, 0, 0, 0))
-                else:
-                    texture.set_at((x, y), (255, 255, 255, 255))
-        self.world.blit(texture, self.pos, special_flags=BLEND_RGBA_MIN)
+        self.world.blit(texture, self.pos)
 
         self.camera.update(delta)
 
         self.x -= 1
         if self.x == 0:
             self.world.unload()
-            raise StateDone
+            raise states.StateChange(states.MainMenuState())
 
     def render(self, screen):
         self.world.render(screen, self.camera)
