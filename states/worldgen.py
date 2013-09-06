@@ -27,7 +27,7 @@ class SurfaceGenState(object):
         os.makedirs("data/world")
 
     def update(self, delta):
-        raise states.StateChange(CaveGenState(self.world))
+        #raise states.StateChange(CaveGenState(self.world))
         for event in pygame.event.get():
             if event.type == QUIT:
                 sys.exit(0)
@@ -68,8 +68,14 @@ class CaveGenState(object):
         self.pos = (0.0, 52)
         self.angle = -pi / 2.0
         self.vel_angle = 0.0
-        self.heightmap = heightmap_1d(14, mul=0.75)
+        heightmap = heightmap_1d(12, mul=0.7)
+        max_height = max(heightmap)
+        min_height = min(heightmap)
+        self.heightmap = [
+            (x - min_height) / (max_height - min_height) for x in heightmap
+        ]
         self.x = 0
+        self.stack = []
 
     def update(self, delta):
         for event in pygame.event.get():
@@ -81,18 +87,40 @@ class CaveGenState(object):
 
         cos = math.cos(self.angle)
         sin = math.sin(self.angle)
+        if random.uniform(0.0, 1.0) < 0.002:
+            self.vel_angle *= 10.0
+            self.stack.append((self.pos, self.angle, self.vel_angle, self.x))
 
-        width = (self.heightmap[self.x] + 1.0) * 8.0 + 2.0
+        if self.pos[1] < -1000:
+            self.carve_end(delta)
+            raise states.StateChange(states.MainMenuState())
+        elif self.stack and random.uniform(0.0, 1.0) < 0.004:
+            self.carve_end(delta)
+            self.pos, self.angle, self.vel_angle, self.x = self.stack.pop()
+            self.vel_angle *= -1.0
+        else:
+            self.carve_step(delta)
+
+    def carve_step(self, delta):
+        cos = math.cos(self.angle)
+        sin = math.sin(self.angle)
+
+        width = self.heightmap[self.x] * 8.0 + 2.0
         vertices = [
             (self.pos[0] - sin * width, self.pos[1] + cos * width),
             (self.pos[0] + sin * width, self.pos[1] - cos * width)
         ]
 
-        if self.pos[1] > -50.0 or self.angle > pi/4 or self.angle < -3*pi/4:
+        if self.pos[1] > -50.0 or self.angle > 0.0 or self.angle < -pi:
             self.vel_angle = -self.angle - pi / 2.0
+        elif self.stack and self.angle < -pi/3 and self.angle > -2*pi/3:
+            if self.angle > -pi/2:
+                self.vel_angle = 1
+            else:
+                self.vel_angle = -1
         else:
-            self.vel_angle += random.uniform(-0.001, 0.001)
-        self.vel_angle = max(-0.01, min(0.01, self.vel_angle))
+            self.vel_angle += random.uniform(-0.0025, 0.0025)
+        self.vel_angle = max(-0.025, min(0.025, self.vel_angle))
 
         self.angle += self.vel_angle
         if self.angle > pi / 2.0:
@@ -108,7 +136,7 @@ class CaveGenState(object):
         self.world.update(0.0)
         self.x = (self.x + 1) % len(self.heightmap)
 
-        width = (self.heightmap[self.x] + 1.0) * 8.0 + 2.0
+        width = self.heightmap[self.x] * 8.0 + 2.0
         vertices += [
             (
                 self.pos[0] + sin * width + cos/2,
@@ -127,6 +155,21 @@ class CaveGenState(object):
         self.world.b2world.DestroyBody(body)
 
         self.camera.update(delta)
+
+    def carve_end(self, delta):
+        vertices = []
+        width = self.heightmap[self.x] * 8.0 + 2.0
+        for i in range(16):
+            angle = i * 2 * pi / 16
+            cos = math.cos(angle)
+            sin = math.sin(angle)
+            vertex = (self.pos[0] + cos * width, self.pos[1] + sin * width)
+            vertices.append(vertex)
+        body = self.world.b2world.CreateStaticBody(
+            shapes=b2PolygonShape(vertices=vertices)
+        )
+        self.world.carve(body)
+        self.world.b2world.DestroyBody(body)
 
     def render(self, screen):
         self.world.render(screen, self.camera)
