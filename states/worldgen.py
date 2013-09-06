@@ -27,6 +27,7 @@ class SurfaceGenState(object):
         os.makedirs("data/world")
 
     def update(self, delta):
+        raise states.StateChange(CaveGenState(self.world))
         for event in pygame.event.get():
             if event.type == QUIT:
                 sys.exit(0)
@@ -67,8 +68,8 @@ class CaveGenState(object):
         self.pos = (0.0, 52)
         self.angle = -pi / 2.0
         self.vel_angle = 0.0
-        self.heightmap = heightmap_1d(10)
-        self.x = 1000
+        self.heightmap = heightmap_1d(14, mul=0.75)
+        self.x = 0
 
     def update(self, delta):
         for event in pygame.event.get():
@@ -81,9 +82,10 @@ class CaveGenState(object):
         cos = math.cos(self.angle)
         sin = math.sin(self.angle)
 
+        width = (self.heightmap[self.x] + 1.0) * 8.0 + 2.0
         vertices = [
-            (self.pos[0] + sin * 10, self.pos[1] + cos * 10),
-            (self.pos[0] - sin * 10, self.pos[1] - cos * 10)
+            (self.pos[0] - sin * width, self.pos[1] + cos * width),
+            (self.pos[0] + sin * width, self.pos[1] - cos * width)
         ]
 
         if self.pos[1] > -50.0 or self.angle > pi/4 or self.angle < -3*pi/4:
@@ -104,26 +106,27 @@ class CaveGenState(object):
         )
         self.world.center = self.pos
         self.world.update(0.0)
+        self.x = (self.x + 1) % len(self.heightmap)
 
+        width = (self.heightmap[self.x] + 1.0) * 8.0 + 2.0
         vertices += [
-            (self.pos[0] - sin * 10, self.pos[1] - cos * 10),
-            (self.pos[0] + sin * 10, self.pos[1] + cos * 10)
+            (
+                self.pos[0] + sin * width + cos/2,
+                self.pos[1] - cos * width + sin/2
+            ),
+            (
+                self.pos[0] - sin * width + cos/2,
+                self.pos[1] + cos * width + sin/2
+            )
         ]
 
         body = self.world.b2world.CreateStaticBody(
-            position=self.pos,
             shapes=b2PolygonShape(vertices=vertices)
         )
-        body.angle = self.angle
         self.world.carve(body)
         self.world.b2world.DestroyBody(body)
 
         self.camera.update(delta)
-
-        self.x -= 1
-        if self.x == 0:
-            self.world.unload()
-            raise states.StateChange(states.MainMenuState())
 
     def render(self, screen):
         self.world.render(screen, self.camera)

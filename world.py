@@ -101,7 +101,7 @@ class Chunk(object):
             self.polygon -= polygon
             if self.texture:
                 draw_vertices = [
-                    ((x + 25.6) * 10, (y + 25.6) * 10) for (x, y) in vertices
+                    ((x + 25.6) * 10, 512 - (y + 25.6) * 10) for (x, y) in vertices
                 ]
                 pygame.draw.polygon(self.texture, (255, 0, 255), draw_vertices)
         self.load_body()

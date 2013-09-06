@@ -1,7 +1,7 @@
 import random
 
 
-def heightmap_1d(iterations, seed=None):
+def heightmap_1d(iterations, seed=None, mul=0.5):
     """ Midpoint displacement! """
     if seed != None:
         random.seed(seed)
@@ -20,7 +20,7 @@ def heightmap_1d(iterations, seed=None):
             new_heights += [left, mid]
         heightmap = new_heights
 
-        multiplier *= 0.5
+        multiplier *= mul
 
     start_index = random.randint(0, len(heightmap) - 1)
     heightmap = heightmap[start_index:] + heightmap[:start_index]
