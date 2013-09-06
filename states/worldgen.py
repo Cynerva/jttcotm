@@ -47,8 +47,6 @@ class SurfaceGenState(object):
         self.heightmap = heightmap_1d(14)
         self.camera = Camera()
         self.x = 0
-        self.texture = pygame.Surface((2, 1024))
-        self.texture.fill((255, 0, 255))
 
     def update(self, delta):
         left = self.heightmap[self.x] * 51.2
@@ -65,10 +63,6 @@ class SurfaceGenState(object):
         ))
         self.world.carve(body)
         self.world.b2world.DestroyBody(body)
-
-        for x in range(self.x, self.x + 20):
-            height = self.heightmap[x % 16384] * 51.2 + 51.2
-            self.world.blit(self.texture, (x / 10.0, height))
 
         self.camera.pos = self.world.center
 
@@ -119,12 +113,6 @@ class CaveGenState(object):
         body.angle = self.angle
         self.world.carve(body)
         self.world.b2world.DestroyBody(body)
-
-        texture = pygame.Surface((10.0, size*20))
-        texture.fill((255, 0, 255))
-        texture.set_colorkey((0, 0, 0))
-        texture = pygame.transform.rotate(texture, self.angle * 180.0 / pi)
-        self.world.blit(texture, self.pos)
 
         self.camera.update(delta)
 

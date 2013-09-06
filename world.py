@@ -71,8 +71,8 @@ class Chunk(object):
         pos = camera.screen_pos(self.pos)
         if self.texture:
             screen.blit(self.texture, pos)
-        if self.body:
-            draw_body(self.body, screen, camera)
+        #if self.body:
+        #    draw_body(self.body, screen, camera)
 
     def unload(self):
         if self.body:
@@ -87,6 +87,9 @@ class Chunk(object):
     def carve(self, body):
         if not self.polygon:
             return
+        if self.texture == Chunk.underground_texture:
+            self.texture = Chunk.underground_texture.copy()
+            self.texture.set_colorkey((255, 0, 255))
         for fixture in body.fixtures:
             shape = fixture.shape
             vertices = [tuple(body.transform * x) for x in shape.vertices]
@@ -96,6 +99,11 @@ class Chunk(object):
             ]
             polygon = Polygon(vertices)
             self.polygon -= polygon
+            if self.texture:
+                draw_vertices = [
+                    ((x + 25.6) * 10, 512 - (y + 25.6) * 10) for (x, y) in vertices
+                ]
+                pygame.draw.polygon(self.texture, (255, 0, 255), draw_vertices)
         self.load_body()
 
     def blit(self, texture, pos, special_flags=0):
