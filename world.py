@@ -193,4 +193,3 @@ class World(object):
             chunk_pos[1] if pos[1] < 0.0 else chunk_pos[1] + 1
         )
         self.chunks[chunk_pos].entities.append(entity)
-

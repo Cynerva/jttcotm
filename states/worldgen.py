@@ -86,30 +86,31 @@ class CaveGenState(object):
 
         cos = math.cos(self.angle)
         sin = math.sin(self.angle)
-        if self.pos[1] >= -2000 and self.angle < -pi/3 and self.angle > -2*pi/3:
-            if random.random() < 0.02:
-                self.angle -= pi / 2
-                self.angle += pi * random.randint(0, 1)
-                self.stack.append(
-                    (self.pos, self.angle, self.x)
-                )
+        if self.pos[1] >= -2000 and self.pos[1] < -50:
+            if self.angle < -pi/3 and self.angle > -2*pi/3:
+                if random.random() < 0.02:
+                    self.angle -= pi / 2
+                    self.angle += pi * random.randint(0, 1)
+                    self.stack.append(
+                        (self.pos, self.angle, self.x)
+                    )
 
         if self.stack:
             if self.pos[1] < -2000 or random.random() < 0.02:
-                self.carve_end(delta)
+                self.add_object()
                 self.pos, self.angle, self.x = self.stack.pop()
                 self.angle -= pi
             else:
-                self.carve_step(delta)
+                self.carve_step()
         elif self.pos[1] < -4000:
             # TODO: create the end of the game
-            self.carve_end(delta)
+            self.add_object()
             self.world.unload()
             raise states.StateChange(states.MainMenuState())
         else:
-            self.carve_step(delta)
+            self.carve_step()
 
-    def carve_step(self, delta):
+    def carve_step(self):
         cos = math.cos(self.angle)
         sin = math.sin(self.angle)
 
@@ -163,9 +164,9 @@ class CaveGenState(object):
         self.world.carve(body)
         self.world.b2world.DestroyBody(body)
 
-        self.camera.update(delta)
+        self.camera.update(0.0)
 
-    def carve_end(self, delta):
+    def add_object(self):
         vertices = []
         width = self.heightmap[self.x]
         for i in range(16):

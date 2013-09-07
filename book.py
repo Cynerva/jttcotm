@@ -34,11 +34,18 @@ class Book(object):
             if not Book.font:
                 Book.font = pygame.font.Font(None, 16)
             count = int((self.time - self.start_time) / 0.05)
-            text = self.text[:count]
-            texture = self.font.render(text, 1, (255, 255, 255))
-            pos = camera.screen_pos(self.pos)
-            pos = (
-                pos[0] - texture.get_width() / 2,
-                pos[1] - texture.get_height() / 2
-            )
-            screen.blit(texture, pos)
+            words = self.text[:count].split()
+            lines = [""]
+            for word in words:
+                if len(lines[-1]) > 32:
+                    lines.append(word)
+                else:
+                    lines[-1] += " " + word
+            for i in range(len(lines)):
+                texture = self.font.render(lines[i], 1, (255, 255, 255))
+                pos = camera.screen_pos(self.pos)
+                pos = (
+                    pos[0] - texture.get_width() / 2,
+                    pos[1] - texture.get_height() / 2 + i * 20 - 40
+                )
+                screen.blit(texture, pos)
