@@ -25,7 +25,10 @@ class SurfaceGenState(object):
         self.heightmap = heightmap_1d(14)
         self.camera = Camera()
         self.x = 0
-        shutil.rmtree("data/world")
+        try:
+            shutil.rmtree("data/world")
+        except OSError:
+            pass
         os.makedirs("data/world")
 
     def update(self, delta):

@@ -1,3 +1,4 @@
+import os
 import sys
 import pygame
 from pygame.locals import *
@@ -17,7 +18,7 @@ MENU_ENTRIES = [
 class MainMenuState(object):
     def __init__(self):
         self.font = pygame.font.Font("data/fonts/Prototype.ttf", 16)
-        self.selected = 0
+        self.selected = 0 if os.path.exists("data/world") else 1
         music.play("data/music/menu.ogg")
 
     def update(self, delta):
@@ -42,6 +43,8 @@ class MainMenuState(object):
     def render(self, screen):
         y = 128
         for i in range(len(MENU_ENTRIES)):
+            if i == 0 and not os.path.exists("data/world"):
+                continue
             entry = MENU_ENTRIES[i]
             if self.selected == i:
                 texture = self.font.render(entry, 1, (255, 255, 255))

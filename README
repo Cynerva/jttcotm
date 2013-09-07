@@ -1,10 +1,14 @@
 Journey to the Center of the Moon is an entry by Twin Fox for pyweek 17.
 
-====== Installation (Ubuntu) ======
-Apologies for the horribly abbreviated install instructions. The game requires
-python2, pybox2d and Polygon, which you can get from pip. If you don't have pip,
-I believe Ubuntu comes with setuptools by default so you can just use easy_install.
+====== Playing on Ubuntu ======
+The game requires python2.7, pygame, pybox2d and Polygon, which you can get
+from pip. If you don't have pip, I believe Ubuntu comes with setuptools by
+default so you can just use easy_install.
 
 sudo easy_install pip
-sudo pip install box2d polygon2
-./run
+sudo pip install pygame box2d polygon2
+./jttcotm
+
+====== Playing on Windows ======
+Just double click on jttcotm.exe! Then yell at me when it inevitably doesn't
+work. Don't worry, I deserve it.

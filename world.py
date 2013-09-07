@@ -9,12 +9,6 @@ from Polygon import Polygon
 from debug import draw_body
 
 
-try:
-    os.makedirs("data/world")
-except OSError:
-    pass
-
-
 class Chunk(object):
     underground_texture = None
 
