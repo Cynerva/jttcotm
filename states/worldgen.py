@@ -89,18 +89,27 @@ class CaveGenState(object):
 
         cos = math.cos(self.angle)
         sin = math.sin(self.angle)
-        if random.uniform(0.0, 1.0) < 0.002:
-            self.vel_angle *= 10.0
-            self.stack.append((self.pos, self.angle, self.vel_angle, self.x))
+        if self.angle < -pi/3 and self.angle > -2*pi/3:
+            if random.random() < 0.01:
+                self.angle -= pi / 2
+                self.angle += pi * random.randint(0, 1)
+                self.stack.append(
+                    (self.pos, self.angle, self.x)
+                )
+                self.carve_end(delta)
 
-        if self.pos[1] < -1000:
+        if self.stack:
+            if self.pos[1] < -1000 or random.random() < 0.01:
+                self.carve_end(delta)
+                self.pos, self.angle, self.x = self.stack.pop()
+                self.angle -= pi
+            else:
+                self.carve_step(delta)
+        elif self.pos[1] < -1000:
+            # TODO: create the end of the game
             self.carve_end(delta)
             self.world.unload()
             raise states.StateChange(states.MainMenuState())
-        elif self.stack and random.uniform(0.0, 1.0) < 0.004:
-            self.carve_end(delta)
-            self.pos, self.angle, self.vel_angle, self.x = self.stack.pop()
-            self.vel_angle *= -1.0
         else:
             self.carve_step(delta)
 
@@ -116,7 +125,7 @@ class CaveGenState(object):
 
         if self.pos[1] > -50.0 or self.angle > 0.0 or self.angle < -pi:
             self.vel_angle = -self.angle - pi / 2.0
-        elif self.stack and self.angle < -pi/3 and self.angle > -2*pi/3:
+        elif self.stack and self.angle < -pi/4 and self.angle > -3*pi/4:
             if self.angle > -pi/2:
                 self.vel_angle = 1
             else:
