@@ -85,7 +85,7 @@ class CaveGenState(object):
 
         cos = math.cos(self.angle)
         sin = math.sin(self.angle)
-        if self.angle < -pi/3 and self.angle > -2*pi/3:
+        if self.pos[1] >= -1000 and self.angle < -pi/3 and self.angle > -2*pi/3:
             if random.random() < 0.01:
                 self.angle -= pi / 2
                 self.angle += pi * random.randint(0, 1)
@@ -101,7 +101,7 @@ class CaveGenState(object):
                 self.angle -= pi
             else:
                 self.carve_step(delta)
-        elif self.pos[1] < -1000:
+        elif self.pos[1] < -3000:
             # TODO: create the end of the game
             self.carve_end(delta)
             self.world.unload()
@@ -119,7 +119,8 @@ class CaveGenState(object):
             (self.pos[0] + sin * width, self.pos[1] - cos * width)
         ]
 
-        if self.pos[1] > -50.0 or self.angle > 0.0 or self.angle < -pi:
+        if (self.pos[1] > -50.0 or self.pos[1] < -1000 or
+                self.angle > 0.0 or self.angle < -pi):
             self.vel_angle = -self.angle - pi / 2.0
         elif self.stack and self.angle < -pi/4 and self.angle > -3*pi/4:
             if self.angle > -pi/2:
