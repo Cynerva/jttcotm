@@ -55,16 +55,16 @@ class Player(object):
                     break
 
         # Vertical logic
-        if keys[K_w] and can_jump:
+        if (keys[K_w] or keys[K_UP]) and can_jump:
             self.body.linearVelocity[1] = 30.0
         elif self.body.linearVelocity[1] > 0.0:
             vel_delta = self.body.linearVelocity[1] * delta * 2.0
             self.body.linearVelocity[1] -= vel_delta
 
         # Horizontal logic
-        if keys[K_a]:
+        if keys[K_a] or keys[K_LEFT]:
             self.body.linearVelocity[0] -= 30.0 * delta
-        if keys[K_d]:
+        if keys[K_d] or keys[K_RIGHT]:
             self.body.linearVelocity[0] += 30.0 * delta
         self.body.linearVelocity[0] -= self.body.linearVelocity[0] * delta * 2.0
             
