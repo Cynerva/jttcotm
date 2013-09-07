@@ -94,6 +94,8 @@ class CaveGenState(object):
                     self.stack.append(
                         (self.pos, self.angle, self.x)
                     )
+            elif random.random() < 0.003:
+                self.add_object()
 
         if self.stack:
             if self.pos[1] < -2000 or random.random() < 0.02:
