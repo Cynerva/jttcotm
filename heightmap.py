@@ -25,4 +25,11 @@ def heightmap_1d(iterations, seed=None, mul=0.5):
     start_index = random.randint(0, len(heightmap) - 1)
     heightmap = heightmap[start_index:] + heightmap[:start_index]
 
+    min_height = min(heightmap)
+    max_height = max(heightmap)
+    heightmap = [
+        (x - min_height) / (max_height - min_height) * 2.0 - 1.0
+        for x in heightmap
+    ]
+
     return heightmap

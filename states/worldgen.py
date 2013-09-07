@@ -70,11 +70,7 @@ class CaveGenState(object):
         self.angle = -pi / 2.0
         self.vel_angle = 0.0
         heightmap = heightmap_1d(12, mul=0.7)
-        max_height = max(heightmap)
-        min_height = min(heightmap)
-        self.heightmap = [
-            (x - min_height) / (max_height - min_height) for x in heightmap
-        ]
+        self.heightmap = [(x + 1.0) * 4.0 + 2.0 for x in heightmap]
         self.x = 0
         self.stack = []
 
@@ -117,7 +113,7 @@ class CaveGenState(object):
         cos = math.cos(self.angle)
         sin = math.sin(self.angle)
 
-        width = self.heightmap[self.x] * 8.0 + 2.0
+        width = self.heightmap[self.x]
         vertices = [
             (self.pos[0] - sin * width, self.pos[1] + cos * width),
             (self.pos[0] + sin * width, self.pos[1] - cos * width)
@@ -148,7 +144,7 @@ class CaveGenState(object):
         self.world.update(0.0)
         self.x = (self.x + 1) % len(self.heightmap)
 
-        width = self.heightmap[self.x] * 8.0 + 2.0
+        width = self.heightmap[self.x]
         vertices += [
             (
                 self.pos[0] + sin * width + cos/2,
@@ -170,7 +166,7 @@ class CaveGenState(object):
 
     def carve_end(self, delta):
         vertices = []
-        width = self.heightmap[self.x] * 8.0 + 2.0
+        width = self.heightmap[self.x]
         for i in range(16):
             angle = i * 2 * pi / 16
             cos = math.cos(angle)

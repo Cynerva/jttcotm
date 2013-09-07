@@ -15,7 +15,7 @@ class Cave(object):
         self.surface.fill((255, 0, 255))
         heightmap = heightmap_1d(9)
         for x in range(512):
-            height = int((heightmap[x] + 1.0) * 256)
+            height = int((heightmap[x] + 1.0) * 256 + 0)
             for y in range(512):
                 a = random.uniform(16.0, 32.0)
                 self.texture.set_at((x, y), (a, a, a))
