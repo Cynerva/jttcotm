@@ -16,7 +16,7 @@ class MainGameState(object):
     def __init__(self):
         self.background = backgrounds.Cave()
         self.world = World()
-        self.player = Player(self.world, (0, 100.0))
+        self.player = Player(self.world, (-100, 52.4))
         self.camera = Camera((0, 100.0), tracking=self.player)
 
     def update(self, delta):

@@ -1,5 +1,10 @@
 Journey to the Center of the Moon is an entry by Twin Fox for pyweek 17.
 
+====== Controls ======
+WASD or arrow keys to move. That's all.
+
+Sorry I didn't make time for custom keys!
+
 ====== Playing on Ubuntu ======
 The game requires python2.7, pygame, pybox2d and Polygon, which you can get
 from pip. If you don't have pip, I believe Ubuntu comes with setuptools by
@@ -12,3 +17,6 @@ sudo pip install pygame box2d polygon2
 ====== Playing on Windows ======
 Just double click on jttcotm.exe! Then yell at me when it inevitably doesn't
 work. Don't worry, I deserve it.
+
+====== Playing on Mac ======
+... Uh... good luck! I didn't have one to test on.
