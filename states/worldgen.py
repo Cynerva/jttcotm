@@ -183,7 +183,7 @@ class CaveGenState(object):
         self.world.carve(body)
         self.world.b2world.DestroyBody(body)
 
-        if random.random() < 0.25:
+        if random.random() < 0.5:
             text = random.choice(open("data/text/books.txt").readlines()).strip()
             pos = (self.pos[0], self.pos[1] - width + 2.0)
             event = Book(text, pos)

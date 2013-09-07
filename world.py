@@ -69,9 +69,9 @@ class Chunk(object):
             shapes=shapes
         )
 
-    def update(self, delta, pos):
+    def update(self, delta, player_pos):
         for entity in self.entities:
-            entity.update(delta, pos)
+            entity.update(delta, self.pos, player_pos)
 
     def render(self, screen, camera):
         pos = camera.screen_pos(self.pos)
@@ -124,6 +124,10 @@ class Chunk(object):
     def blit(self, texture, pos, special_flags=0):
         self.things_to_blit.append((texture, pos))
 
+    def add_entity(self, entity):
+        entity.pos = (entity.pos[0] - self.pos[0], entity.pos[1] - self.pos[1])
+        self.entities.append(entity)
+
 class World(object):
     def __init__(self):
         self.b2world = b2World(gravity=(0, -10.0), doSleep=True)
@@ -172,7 +176,7 @@ class World(object):
             chunk.render(screen, camera)
         for chunk in self.chunks.values():
             for entity in chunk.entities:
-                entity.render(screen, camera)
+                entity.render(screen, camera, chunk.pos)
 
     def carve(self, body):
         for chunk in self.chunks.values():
@@ -194,4 +198,4 @@ class World(object):
             chunk_pos[0] - 1 if pos[0] < 0.0 else chunk_pos[0],
             chunk_pos[1] if pos[1] < 0.0 else chunk_pos[1] + 1
         )
-        self.chunks[chunk_pos].entities.append(entity)
+        self.chunks[chunk_pos].add_entity(entity)
