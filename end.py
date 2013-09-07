@@ -59,7 +59,7 @@ class EndEvent(object):
 
         if self.start_time:
             if not EndEvent.font:
-                EndEvent.font = pygame.font.Font(None, 16)
+                EndEvent.font = pygame.font.Font("data/fonts/GOODTIME.ttf", 16)
             count = int((self.time - self.start_time) / 0.05)
             i = 0
             while count > len(EndEvent.text[i]) + 50 and i < len(EndEvent.text) - 1:

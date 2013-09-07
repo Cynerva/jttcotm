@@ -14,7 +14,7 @@ MENU_ENTRIES = [
 
 class PauseMenuState(object):
     def __init__(self, parent):
-        self.font = pygame.font.Font(None, 16)
+        self.font = pygame.font.Font("data/fonts/GOODTIME.ttf", 16)
         self.selected = 0
         self.parent = parent
 
