@@ -78,8 +78,6 @@ class Chunk(object):
             screen.blit(self.texture, pos)
         #if self.body:
         #    draw_body(self.body, screen, camera)
-        for entity in self.entities:
-            entity.render(screen, camera)
 
     def unload(self):
         if self.body:
@@ -170,6 +168,9 @@ class World(object):
     def render(self, screen, camera):
         for chunk in self.chunks.values():
             chunk.render(screen, camera)
+        for chunk in self.chunks.values():
+            for entity in chunk.entities:
+                entity.render(screen, camera)
 
     def carve(self, body):
         for chunk in self.chunks.values():

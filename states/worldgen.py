@@ -15,7 +15,8 @@ from world import World
 from heightmap import heightmap_1d
 from camera import Camera
 from debug import draw_body
-from events import TextEvent
+from book import Book
+
 
 class SurfaceGenState(object):
     def __init__(self):
@@ -85,8 +86,8 @@ class CaveGenState(object):
 
         cos = math.cos(self.angle)
         sin = math.sin(self.angle)
-        if self.pos[1] >= -1000 and self.angle < -pi/3 and self.angle > -2*pi/3:
-            if random.random() < 0.01:
+        if self.pos[1] >= -2000 and self.angle < -pi/3 and self.angle > -2*pi/3:
+            if random.random() < 0.02:
                 self.angle -= pi / 2
                 self.angle += pi * random.randint(0, 1)
                 self.stack.append(
@@ -94,13 +95,13 @@ class CaveGenState(object):
                 )
 
         if self.stack:
-            if self.pos[1] < -1000 or random.random() < 0.01:
+            if self.pos[1] < -2000 or random.random() < 0.02:
                 self.carve_end(delta)
                 self.pos, self.angle, self.x = self.stack.pop()
                 self.angle -= pi
             else:
                 self.carve_step(delta)
-        elif self.pos[1] < -3000:
+        elif self.pos[1] < -4000:
             # TODO: create the end of the game
             self.carve_end(delta)
             self.world.unload()
@@ -118,7 +119,7 @@ class CaveGenState(object):
             (self.pos[0] + sin * width, self.pos[1] - cos * width)
         ]
 
-        if (self.pos[1] > -50.0 or self.pos[1] < -1000 or
+        if (self.pos[1] > -50.0 or self.pos[1] < -2000 or
                 self.angle > 0.0 or self.angle < -pi):
             self.vel_angle = -self.angle - pi / 2.0
         elif self.stack and self.angle < -pi/4 and self.angle > -3*pi/4:
@@ -179,8 +180,10 @@ class CaveGenState(object):
         self.world.carve(body)
         self.world.b2world.DestroyBody(body)
 
-        event = TextEvent("This is a test event.", self.pos)
-        self.world.add_entity(event, self.pos)
+        text = random.choice(open("data/text/books.txt").readlines()).strip()
+        pos = (self.pos[0], self.pos[1] - width + 2.0)
+        event = Book(text, pos)
+        self.world.add_entity(event, pos)
 
     def render(self, screen):
         self.world.render(screen, self.camera)
