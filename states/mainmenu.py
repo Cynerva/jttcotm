@@ -16,7 +16,7 @@ MENU_ENTRIES = [
 
 class MainMenuState(object):
     def __init__(self):
-        self.font = pygame.font.Font("data/fonts/GOODTIME.ttf", 16)
+        self.font = pygame.font.Font("data/fonts/Prototype.ttf", 16)
         self.selected = 0
         music.play("data/music/menu.ogg")
 

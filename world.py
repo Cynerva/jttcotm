@@ -119,7 +119,7 @@ class Chunk(object):
                     ((x + 25.6) * 10, 512 - (y + 25.6) * 10) for (x, y) in vertices
                 ]
                 pygame.draw.polygon(self.texture, (255, 0, 255), draw_vertices)
-        self.load_body()
+        #self.load_body()
 
     def blit(self, texture, pos, special_flags=0):
         self.things_to_blit.append((texture, pos))

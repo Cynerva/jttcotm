@@ -34,7 +34,7 @@ class Book(object):
 
         if self.start_time:
             if not Book.font:
-                Book.font = pygame.font.Font("data/fonts/GOODTIME.ttf", 16)
+                Book.font = pygame.font.Font("data/fonts/Prototype.ttf", 12)
             count = int((self.time - self.start_time) / 0.05)
             words = self.text[:count].split()
             lines = [""]

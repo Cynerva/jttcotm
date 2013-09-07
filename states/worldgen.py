@@ -86,7 +86,7 @@ class CaveGenState(object):
 
         cos = math.cos(self.angle)
         sin = math.sin(self.angle)
-        if self.pos[1] >= -2000 and self.pos[1] < -50:
+        if self.pos[1] >= -1000 and self.pos[1] < -50:
             if self.angle < -pi/3 and self.angle > -2*pi/3:
                 if random.random() < 0.03:
                     self.angle -= pi / 2
@@ -98,13 +98,13 @@ class CaveGenState(object):
                 self.add_object()
 
         if self.stack:
-            if self.pos[1] < -2000 or random.random() < 0.02:
+            if self.pos[1] < -1000 or random.random() < 0.02:
                 self.add_object()
                 self.pos, self.angle, self.x = self.stack.pop()
                 self.angle -= pi
             else:
                 self.carve_step()
-        elif self.pos[1] < -4000:
+        elif self.pos[1] < -3000:
             self.add_object(end=True)
             self.world.unload()
             raise states.StateChange(states.MainMenuState())
@@ -121,7 +121,7 @@ class CaveGenState(object):
             (self.pos[0] + sin * width, self.pos[1] - cos * width)
         ]
 
-        if (self.pos[1] > -50.0 or self.pos[1] < -2000 or
+        if (self.pos[1] > -50.0 or self.pos[1] < -1000 or
                 self.angle > 0.0 or self.angle < -pi):
             self.vel_angle = -self.angle - pi / 2.0
         elif self.stack and self.angle < -pi/4 and self.angle > -3*pi/4:

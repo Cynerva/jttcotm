@@ -13,4 +13,4 @@ try:
 except ImportError:
     pass
 
-setup(console=["jttcotm"])
+setup(windows=["jttcotm"])
