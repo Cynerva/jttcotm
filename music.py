@@ -15,6 +15,7 @@ def play(filename):
         cur_time = time()
         while cur_time < start_time + 2.0:
             pygame.mixer.music.set_volume((cur_time - start_time) / 2.0)
+            sleep(0.01)
             cur_time = time()
         pygame.mixer.music.set_volume(2.0)
     thread = Thread(target=start)
