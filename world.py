@@ -25,6 +25,7 @@ class Chunk(object):
         self.texture = None
         self.polygon = None
         self.body = None
+        self.entities = []
 
         texture_filename = "data/world/%i_%i.tga" % self.chunk_pos
         if os.path.exists(texture_filename):
@@ -36,7 +37,7 @@ class Chunk(object):
         data_filename = "data/world/%i_%i.dat" % self.chunk_pos
         if os.path.exists(data_filename):
             with open(data_filename) as fin:
-                self.polygon = pickle.load(fin)
+                self.polygon, self.entities = pickle.load(fin)
         elif chunk_pos[1] <= 1:
             self.polygon = Polygon((
                 (-25.6, -25.6), 
@@ -67,12 +68,18 @@ class Chunk(object):
             shapes=shapes
         )
 
+    def update(self, delta, pos):
+        for entity in self.entities:
+            entity.update(delta, pos)
+
     def render(self, screen, camera):
         pos = camera.screen_pos(self.pos)
         if self.texture:
             screen.blit(self.texture, pos)
         #if self.body:
         #    draw_body(self.body, screen, camera)
+        for entity in self.entities:
+            entity.render(screen, camera)
 
     def unload(self):
         if self.body:
@@ -82,7 +89,7 @@ class Chunk(object):
                 self.texture, "data/world/%i_%i.tga" % self.chunk_pos
             )
         with open("data/world/%i_%i.dat" % self.chunk_pos, "w") as fout:
-            pickle.dump(self.polygon, fout)
+            pickle.dump((self.polygon, self.entities), fout)
 
     def carve(self, body):
         if not self.polygon:
@@ -157,6 +164,9 @@ class World(object):
         self.b2world.Step(delta, 8, 8)
         self.b2world.ClearForces()
 
+        for chunk in self.chunks.values():
+            chunk.update(delta, self.center)
+
     def render(self, screen, camera):
         for chunk in self.chunks.values():
             chunk.render(screen, camera)
@@ -174,3 +184,12 @@ class World(object):
             chunk.unload()
         self.chunks = {}
         self.center_chunk = None
+
+    def add_entity(self, entity, pos):
+        chunk_pos = (int(pos[0] / 51.2), int(pos[1] / 51.2))
+        chunk_pos = (
+            chunk_pos[0] - 1 if pos[0] < 0.0 else chunk_pos[0],
+            chunk_pos[1] if pos[1] < 0.0 else chunk_pos[1] + 1
+        )
+        self.chunks[chunk_pos].entities.append(entity)
+

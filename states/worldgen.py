@@ -15,7 +15,7 @@ from world import World
 from heightmap import heightmap_1d
 from camera import Camera
 from debug import draw_body
-
+from events import TextEvent
 
 class SurfaceGenState(object):
     def __init__(self):
@@ -92,7 +92,6 @@ class CaveGenState(object):
                 self.stack.append(
                     (self.pos, self.angle, self.x)
                 )
-                self.carve_end(delta)
 
         if self.stack:
             if self.pos[1] < -1000 or random.random() < 0.01:
@@ -179,6 +178,9 @@ class CaveGenState(object):
         )
         self.world.carve(body)
         self.world.b2world.DestroyBody(body)
+
+        event = TextEvent("This is a test event.", self.pos)
+        self.world.add_entity(event, self.pos)
 
     def render(self, screen):
         self.world.render(screen, self.camera)

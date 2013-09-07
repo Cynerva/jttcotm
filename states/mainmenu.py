@@ -8,7 +8,7 @@ from config import screen_width
 
 
 MENU_ENTRIES = [
-    "New game",
+    "Start",
     "Generate world",
     "Exit"
 ]
