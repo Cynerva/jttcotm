@@ -16,6 +16,7 @@ from heightmap import heightmap_1d
 from camera import Camera
 from debug import draw_body
 from book import Book
+from end import EndEvent
 
 
 class SurfaceGenState(object):
@@ -28,7 +29,6 @@ class SurfaceGenState(object):
         os.makedirs("data/world")
 
     def update(self, delta):
-        #raise states.StateChange(CaveGenState(self.world))
         for event in pygame.event.get():
             if event.type == QUIT:
                 sys.exit(0)
@@ -105,8 +105,7 @@ class CaveGenState(object):
             else:
                 self.carve_step()
         elif self.pos[1] < -4000:
-            # TODO: create the end of the game
-            self.add_object()
+            self.add_object(end=True)
             self.world.unload()
             raise states.StateChange(states.MainMenuState())
         else:
@@ -168,7 +167,7 @@ class CaveGenState(object):
 
         self.camera.update(0.0)
 
-    def add_object(self):
+    def add_object(self, end=False):
         vertices = []
         width = self.heightmap[self.x]
         for i in range(16):
@@ -183,7 +182,11 @@ class CaveGenState(object):
         self.world.carve(body)
         self.world.b2world.DestroyBody(body)
 
-        if random.random() < 0.5:
+        if end:
+            pos = (self.pos[0], self.pos[1] - width + 2.0)
+            event = EndEvent(pos)
+            self.world.add_entity(event, pos)
+        elif random.random() < 0.5:
             text = random.choice(open("data/text/books.txt").readlines()).strip()
             pos = (self.pos[0], self.pos[1] - width + 2.0)
             event = Book(text, pos)

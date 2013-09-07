@@ -36,6 +36,9 @@ class PauseMenuState(object):
         self.selected %= len(MENU_ENTRIES)
 
     def render(self, screen):
+        self.parent.render(screen)
+        screen.fill((64, 64, 64), special_flags=BLEND_MULT)
+
         y = 128
         for i in range(len(MENU_ENTRIES)):
             entry = MENU_ENTRIES[i]
