@@ -8,6 +8,7 @@ from config import screen_size, screen_width, screen_height
 def main():
     pygame.init()
     screen = pygame.display.set_mode((screen_width * 2, screen_height * 2))
+    pygame.display.set_caption("Journey to the Center of the Moon")
     surface = pygame.Surface(screen_size)
     state = MainMenuState()
 
