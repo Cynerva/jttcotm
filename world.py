@@ -26,6 +26,7 @@ class Chunk(object):
         self.polygon = None
         self.body = None
         self.entities = []
+        self.things_to_blit = []
 
         texture_filename = "data/world/%i_%i.tga" % self.chunk_pos
         if os.path.exists(texture_filename):
@@ -82,6 +83,15 @@ class Chunk(object):
     def unload(self):
         if self.body:
             self.world.b2world.DestroyBody(self.body)
+        for texture, pos in self.things_to_blit:
+            if self.texture == Chunk.underground_texture:
+                self.texture = Chunk.underground_texture.copy()
+                self.texture.set_colorkey((255, 0, 255))
+            pos = (
+                (pos[0] - self.pos[0]) * 10.0 - texture.get_width() / 2,
+                (self.pos[1] - pos[1]) * 10.0 - texture.get_height() / 2
+            )
+            self.texture.blit(texture, pos)
         if self.texture:
             pygame.image.save(
                 self.texture, "data/world/%i_%i.tga" % self.chunk_pos
@@ -112,15 +122,7 @@ class Chunk(object):
         self.load_body()
 
     def blit(self, texture, pos, special_flags=0):
-        if self.texture == Chunk.underground_texture:
-            self.texture = Chunk.underground_texture.copy()
-            self.texture.set_colorkey((255, 0, 255))
-        if self.texture:
-            pos = (
-                (pos[0] - self.pos[0]) * 10.0 - texture.get_width() / 2,
-                (self.pos[1] - pos[1]) * 10.0 - texture.get_height() / 2
-            )
-            self.texture.blit(texture, pos, special_flags=special_flags)
+        self.things_to_blit.append((texture, pos))
 
 class World(object):
     def __init__(self):

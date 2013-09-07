@@ -88,13 +88,13 @@ class CaveGenState(object):
         sin = math.sin(self.angle)
         if self.pos[1] >= -2000 and self.pos[1] < -50:
             if self.angle < -pi/3 and self.angle > -2*pi/3:
-                if random.random() < 0.02:
+                if random.random() < 0.03:
                     self.angle -= pi / 2
                     self.angle += pi * random.randint(0, 1)
                     self.stack.append(
                         (self.pos, self.angle, self.x)
                     )
-            elif random.random() < 0.003:
+            elif random.random() < 0.004:
                 self.add_object()
 
         if self.stack:
@@ -183,10 +183,28 @@ class CaveGenState(object):
         self.world.carve(body)
         self.world.b2world.DestroyBody(body)
 
-        text = random.choice(open("data/text/books.txt").readlines()).strip()
-        pos = (self.pos[0], self.pos[1] - width + 2.0)
-        event = Book(text, pos)
-        self.world.add_entity(event, pos)
+        if random.random() < 0.5:
+            text = random.choice(open("data/text/books.txt").readlines()).strip()
+            pos = (self.pos[0], self.pos[1] - width + 2.0)
+            event = Book(text, pos)
+            self.world.add_entity(event, pos)
+        elif random.random() < 1.0 / 3.0:
+            filename = "data/art/mid/" + random.choice(os.listdir("data/art/mid"))
+            texture = pygame.image.load(filename)
+            texture.set_colorkey((255, 0, 255))
+            self.world.blit(texture, self.pos)
+        elif random.random() < 0.5:
+            filename = "data/art/low/" + random.choice(os.listdir("data/art/low"))
+            texture = pygame.image.load(filename)
+            texture.set_colorkey((255, 0, 255))
+            pos = (self.pos[0], self.pos[1] - width + texture.get_height() / 20)
+            self.world.blit(texture, pos)
+        else:
+            filename = "data/art/high/" + random.choice(os.listdir("data/art/high"))
+            texture = pygame.image.load(filename)
+            texture.set_colorkey((255, 0, 255))
+            pos = (self.pos[0], self.pos[1] + width - texture.get_height() / 20)
+            self.world.blit(texture, pos)
 
     def render(self, screen):
         self.world.render(screen, self.camera)
